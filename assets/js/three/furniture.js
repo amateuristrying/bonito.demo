@@ -4,13 +4,13 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { rng, artTex, jaaliTex, rugTex } from './textures.js';
 
 const geoCache = new Map();
-export function rb(w, h, d, r = 0.02, seg = 3) {
+export function rb(w, h, d, r = 0.02, seg = 5) {
   r = Math.min(r, w / 2 - 0.001, h / 2 - 0.001, d / 2 - 0.001);
   const k = [w, h, d, r, seg].map((v) => +v.toFixed(3)).join('_');
   if (!geoCache.has(k)) geoCache.set(k, new RoundedBoxGeometry(w, h, d, seg, Math.max(r, 0.0005)));
   return geoCache.get(k);
 }
-const cyl = (rt, rb_, h, s = 24) => new THREE.CylinderGeometry(rt, rb_, h, s);
+const cyl = (rt, rb_, h, s = 40) => new THREE.CylinderGeometry(rt, rb_, h, s);
 
 export function add(parent, geo, mat, x = 0, y = 0, z = 0, opts = {}) {
   const m = new THREE.Mesh(geo, mat);
@@ -562,9 +562,9 @@ export function art(M, { w = 0.8, h = 1.0, seed = 1, frame = true } = {}) {
 }
 
 export function curtains(M, { w = 1.0, h = 2.6 } = {}) {
-  const geo = new THREE.PlaneGeometry(w, h, 48, 1);
+  const geo = new THREE.PlaneGeometry(w, h, 64, 8);
   const p = geo.attributes.position;
-  for (let i = 0; i < p.count; i++) p.setZ(i, Math.sin(p.getX(i) * 34) * 0.035);
+  for (let i = 0; i < p.count; i++) { const x = p.getX(i), y = p.getY(i); p.setZ(i, Math.sin(x * 30) * 0.03 * (1 + (0.5 - y / h) * 0.4) + Math.sin(x * 11 + 1.3) * 0.012); }
   geo.computeVertexNormals();
   const m = new THREE.Mesh(geo, M.curtain);
   m.castShadow = true; m.receiveShadow = true;

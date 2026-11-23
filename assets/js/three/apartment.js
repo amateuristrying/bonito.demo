@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import * as F from './furniture.js';
 import { rb, add } from './furniture.js';
-import { woodTex, herringTex, marbleTex, tileTex, noiseTex, rng } from './textures.js';
+import { woodTex, herringTex, marbleTex, tileTex, rng, plasterTex, boucleTex, grainTex } from './textures.js';
 
 export const H = 2.85;      // ceiling height
 const T = 0.12;              // wall thickness
@@ -22,6 +22,7 @@ export const STYLES = {
 export const UPHOLSTERY = ['#E4DDD1', '#BDB3A4', '#7D8A78', '#3E5266', '#6F2A22', '#C99A3B'];
 export const WALLS = ['#EEE9E1', '#E7DCCB', '#DDE2E0', '#E3D4CB', '#D7DBCF'];
 
+const phys = (o) => new THREE.MeshPhysicalMaterial(o);
 function std(color, rough = 0.8, extra = {}) {
   return new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: 0, ...extra });
 }
@@ -34,42 +35,57 @@ export function makeMaterials(styleName) {
     emissives.push({ mat: m, day, night });
     return m;
   };
-  const fabricBump = noiseTex(6);
+  const boucle = boucleTex();
+  const plaster = plasterTex();
+  const white = new THREE.Color('#ffffff');
+  // upholstery: physically based cloth with sheen — reads as bouclé / velvet under light
+  const cloth = (color, { velvet = false } = {}) => phys({
+    color, roughness: velvet ? 0.72 : 0.92, sheen: 1, sheenRoughness: velvet ? 0.35 : 0.7,
+    sheenColor: new THREE.Color(color).lerp(white, velvet ? 0.5 : 0.3), bumpMap: boucle, bumpScale: velvet ? 0.6 : 1.6,
+  });
+  const velvet = /velvet|silk/.test(S.fabricName);
+  // timber veneer with satin lacquer
+  const timber = (color, rough = 0.48) => phys({ color: '#ffffff', map: grainTex(color, color.length * 7), bumpMap: grainTex(color, color.length * 7), bumpScale: 0.6, roughness: rough, clearcoat: 0.35, clearcoatRoughness: 0.35 });
+  const stone = (map, rough = 0.22) => phys({ map, roughness: rough, clearcoat: 0.6, clearcoatRoughness: 0.12 });
+  const wallMat = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.93, bumpMap: plaster, bumpScale: 0.35 });
   const M = {
     S, emissives,
-    wall: std(S.wall, 0.95),
-    accentWallMat: std(S.accentWall, 0.9),
-    ceiling: std('#F6F2EA', 0.95),
+    wall: wallMat(S.wall),
+    accentWallMat: wallMat(S.accentWall),
+    ceiling: wallMat('#F6F2EA'),
     cap: std('#4A1D17', 0.7),
+    skirting: phys({ color: S.moulding || S.rolled ? '#F3EEE6' : S.woodDark, roughness: 0.4, clearcoat: 0.4, clearcoatRoughness: 0.3 }),
+    cornice: std('#F7F3EC', 0.7),
     facade: std('#EDE6DA', 0.95),
-    wood: std(S.wood, 0.6),
-    woodDark: std(S.woodDark, 0.55),
-    cabinet: std(S.cabinet, 0.5),
-    fabric: std(S.fabric, 0.95, { bumpMap: fabricBump, bumpScale: 0.6 }),
-    fabric2: std(S.fabric2, 0.9, { bumpMap: fabricBump, bumpScale: 0.6 }),
-    accentMat: std(S.accent, 0.85),
-    metal: new THREE.MeshStandardMaterial({ color: S.metal[0], metalness: 0.9, roughness: S.metal[1] }),
-    black: std('#1E1B19', 0.5),
-    white: std('#F7F4EE', 0.85),
-    ceramic: std('#E9E2D6', 0.35),
-    screen: new THREE.MeshStandardMaterial({ color: '#0d0d0f', roughness: 0.12, metalness: 0.4 }),
-    marbleMat: new THREE.MeshStandardMaterial({ map: marbleTex(S.marble[0], S.marble[1]), roughness: 0.2 }),
-    counter: new THREE.MeshStandardMaterial({ map: marbleTex(S.marble[0], S.marble[1], { seed: 21 }), roughness: 0.18 }),
-    splash: new THREE.MeshStandardMaterial({ map: tileTex(S.marble[0], { cols: 8, rows: 4, seed: 9 }), roughness: 0.3 }),
-    glassTint: new THREE.MeshStandardMaterial({ color: '#cfd8d6', transparent: true, opacity: 0.28, roughness: 0.05, metalness: 0.1 }),
-    glassRail: new THREE.MeshStandardMaterial({ color: '#d6e2e2', transparent: true, opacity: 0.22, roughness: 0.05 }),
-    window: new THREE.MeshStandardMaterial({ color: '#dfe9ea', transparent: true, opacity: 0.18, roughness: 0.02, metalness: 0.2, depthWrite: false }),
-    frame: std('#2b2622', 0.5),
-    winFrame: std('#3a3532', 0.45),
-    mirror: new THREE.MeshStandardMaterial({ color: '#e8eef0', metalness: 1, roughness: 0.03 }),
-    curtain: std('#EFE7DA', 0.95, { side: THREE.DoubleSide, transparent: true, opacity: 0.92 }),
-    doorMat: std(S.woodDark, 0.5),
-    pot: std('#D9CBB7', 0.7),
-    leaf: std('#4F6B45', 0.65),
+    wood: timber(S.wood),
+    woodDark: timber(S.woodDark, 0.42),
+    cabinet: phys({ color: S.cabinet, roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.18 }),
+    fabric: cloth(S.fabric, { velvet }),
+    fabric2: cloth(S.fabric2, { velvet: true }),
+    accentMat: cloth(S.accent, { velvet: true }),
+    metal: phys({ color: S.metal[0], metalness: 1, roughness: S.metal[1] * 0.8, clearcoat: 0.3, clearcoatRoughness: 0.2 }),
+    black: std('#1E1B19', 0.45),
+    white: phys({ color: '#F7F4EE', roughness: 0.9, sheen: 0.6, sheenRoughness: 0.8, sheenColor: new THREE.Color('#ffffff'), bumpMap: boucle, bumpScale: 0.5 }),
+    ceramic: phys({ color: '#E9E2D6', roughness: 0.28, clearcoat: 0.8, clearcoatRoughness: 0.1 }),
+    screen: phys({ color: '#0b0b0d', roughness: 0.08, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.03 }),
+    marbleMat: stone(marbleTex(S.marble[0], S.marble[1])),
+    counter: stone(marbleTex(S.marble[0], S.marble[1], { seed: 21 }), 0.18),
+    splash: stone(tileTex(S.marble[0], { cols: 8, rows: 4, seed: 9 }), 0.25),
+    glassTint: phys({ color: '#d4dcda', transparent: true, opacity: 0.25, roughness: 0.04, metalness: 0, clearcoat: 1 }),
+    glassRail: phys({ color: '#d6e2e2', transparent: true, opacity: 0.2, roughness: 0.03, clearcoat: 1 }),
+    window: phys({ color: '#e6eeee', transparent: true, opacity: 0.12, roughness: 0.02, metalness: 0.1, clearcoat: 1, depthWrite: false }),
+    frame: std('#2b2622', 0.45),
+    winFrame: phys({ color: '#34302d', roughness: 0.35, metalness: 0.6 }),
+    mirror: new THREE.MeshStandardMaterial({ color: '#eef2f2', metalness: 1, roughness: 0.02 }),
+    curtain: phys({ color: '#F4EDE2', roughness: 0.95, sheen: 1, sheenRoughness: 0.6, sheenColor: new THREE.Color('#ffffff'), side: THREE.DoubleSide, transparent: true, opacity: 0.78, depthWrite: false }),
+    rod: phys({ color: S.metal[0], metalness: 1, roughness: 0.3 }),
+    doorMat: timber(S.woodDark, 0.45),
+    pot: phys({ color: '#D9CBB7', roughness: 0.75, bumpMap: plaster, bumpScale: 1.5 }),
+    leaf: phys({ color: '#4C6B42', roughness: 0.5, sheen: 0.4, sheenColor: new THREE.Color('#9fbf8a'), side: THREE.DoubleSide }),
     pampas: std('#E6D3B3', 1),
-    bedFrame: std(S.woodDark, 0.6),
-    headboard: std(S.fabric2, 0.9, { bumpMap: fabricBump, bumpScale: 0.6 }),
-    fruit: [std('#C8553D', 0.5), std('#E1A836', 0.5), std('#7E9A4B', 0.5)],
+    bedFrame: timber(S.woodDark, 0.5),
+    headboard: cloth(S.fabric2, { velvet: true }),
+    fruit: [std('#C8553D', 0.4), std('#E1A836', 0.4), std('#7E9A4B', 0.45)],
     rug: { kind: S.rug[0], c1: S.rug[1], c2: S.rug[2], c3: S.rug[3] },
     artPalette: S.art,
     fabricHex: S.fabric, fabric2Hex: S.fabric2, woodHex: S.wood, accent: S.accent,
@@ -81,22 +97,22 @@ export function makeMaterials(styleName) {
   M.flame = glowMat('#FFB347', 1.5, 4);
   M.cove = glowMat('#FFE3B8', 0.15, 2.2);
   M.floor = floorMat(S.floor[0], S.floor[1]);
-  M.kitchenFloor = new THREE.MeshStandardMaterial({ map: tileTex('#D9D2C6', { cols: 2, rows: 2, seed: 4 }), roughness: 0.4 });
-  M.kitchenFloor.map.repeat.set(1 / 1.2, 1 / 1.2);
-  M.deck = new THREE.MeshStandardMaterial({ map: woodTex('#9C6B43', 8), roughness: 0.75 });
-  M.deck.map.repeat.set(0.6, 0.6);
-  M.utilFloor = new THREE.MeshStandardMaterial({ map: tileTex('#CFCAC1', { cols: 4, rows: 4 }), roughness: 0.5 });
-  M.utilFloor.map.repeat.set(1 / 1.2, 1 / 1.2);
+  M.kitchenFloor = tiled(tileTex('#D9D2C6', { cols: 2, rows: 2, seed: 4 }), 1 / 1.2, 0.3);
+  M.deck = tiled(woodTex('#9C6B43', 8), 0.6, 0.7);
+  M.utilFloor = tiled(tileTex('#CFCAC1', { cols: 4, rows: 4 }), 1 / 1.2, 0.45);
   return M;
 }
 
+function tiled(map, rep, rough, clear = 0.3) {
+  map.repeat.set(rep, rep);
+  return phys({ map, bumpMap: map, bumpScale: 1.2, roughness: rough, clearcoat: clear, clearcoatRoughness: 0.25 });
+}
+
 function floorMat(type, color) {
-  let map, rough = 0.55;
-  if (type === 'oak') { map = woodTex(color); map.repeat.set(0.5, 0.5); }
-  else if (type === 'herring') { map = herringTex(color); map.repeat.set(0.7, 0.7); }
-  else if (type === 'marble') { map = marbleTex(color, '#B9AE9F', { grout: 2, seed: 13 }); map.repeat.set(1 / 2.4, 1 / 2.4); rough = 0.16; }
-  else { map = tileTex(color, { cols: 1, rows: 2 }); map.repeat.set(1 / 1.2, 1 / 1.2); rough = 0.35; }
-  return new THREE.MeshStandardMaterial({ map, roughness: rough });
+  if (type === 'oak') return tiled(woodTex(color), 0.5, 0.5, 0.45);
+  if (type === 'herring') return tiled(herringTex(color), 0.7, 0.45, 0.5);
+  if (type === 'marble') { const m = tiled(marbleTex(color, '#B9AE9F', { grout: 2, seed: 13 }), 1 / 2.4, 0.14, 0.9); m.bumpScale = 0.4; m.clearcoatRoughness = 0.06; return m; }
+  return tiled(tileTex(color, { cols: 1, rows: 2 }), 1 / 1.2, 0.3, 0.5);
 }
 
 // ———————————————————————————————— Plan ————————————————————————————————
@@ -215,11 +231,21 @@ function buildWalls(plan, M, group) {
     if (len < 0.01 || h < 0.01) return;
     const L = len + extA + extB;
     const mid = (a - extA + b + extB) / 2;
-    const geo = axis === 'z' ? new THREE.BoxGeometry(L, h, T) : new THREE.BoxGeometry(T, h, L);
+    const geo = metricUV(axis === 'z' ? new THREE.BoxGeometry(L, h, T) : new THREE.BoxGeometry(T, h, L));
     const m = new THREE.Mesh(geo, y1 >= H - 1e-3 ? capMats : M.wall);
     if (axis === 'z') m.position.set(mid, y0 + h / 2, c); else m.position.set(c, y0 + h / 2, mid);
     m.castShadow = true; m.receiveShadow = true;
     group.add(m);
+    // skirting board at the foot, cornice at the ceiling line — both faces of the wall
+    const trim = (y, th, depth, mat) => {
+      const tg = axis === 'z' ? new THREE.BoxGeometry(L, th, T + depth) : new THREE.BoxGeometry(T + depth, th, L);
+      const t = new THREE.Mesh(tg, mat);
+      if (axis === 'z') t.position.set(mid, y, c); else t.position.set(c, y, mid);
+      t.receiveShadow = true; t.castShadow = false;
+      group.add(t);
+    };
+    if (y0 === 0 && h > 0.3) trim(0.055, 0.11, 0.028, M.skirting);
+    if (y1 >= H - 1e-3 && h > 0.15) { trim(H - 0.045, 0.05, 0.05, M.cornice); trim(H - 0.1, 0.025, 0.026, M.cornice); }
     return m;
   };
   for (const w of walls) {
@@ -253,6 +279,18 @@ function openingDressing(group, M, w, o, oa, ob, bottom, top) {
     add(g, rb(len, 0.05, T + 0.04, 0.005), M.winFrame, 0, bottom + 0.025, 0);
     const n = Math.max(1, Math.round(len / 1.0));
     for (let i = 1; i < n; i++) add(g, rb(0.035, h, 0.05, 0.005), M.winFrame, -len / 2 + (len * i) / n, bottom + h / 2, 0);
+    // sheer curtains on the room side of exterior windows
+    if (w.exterior && bottom < 1.0) {
+      const side = w.owners[0].side;
+      const inward = side === 'back' || side === 'left' ? 1 : -1;
+      const ch = H - 0.16;
+      for (const sx of [-1, 1]) {
+        const c = F.curtains(M, { w: 0.62, h: ch });
+        c.position.set(sx * (len / 2 + 0.2), 0.02, inward * (T / 2 + 0.12));
+        g.add(c);
+      }
+      add(g, new THREE.CylinderGeometry(0.012, 0.012, len + 1.0, 12), M.rod, 0, H - 0.12, inward * (T / 2 + 0.12), { rz: Math.PI / 2, cast: false });
+    }
   } else if (o.type === 'door' || o.type === 'entry') {
     const dw = len - 0.04;
     if (o.type === 'entry') g.add(F.door(M, { w: dw, h: top - 0.02 }));
@@ -263,6 +301,18 @@ function openingDressing(group, M, w, o, oa, ob, bottom, top) {
     add(g, rb(len + 0.04, 0.04, T + 0.04, 0.005), M.metal, 0, top, 0);
   }
   group.add(g);
+}
+
+// world-scaled UVs so wall textures keep a constant size regardless of wall length
+function metricUV(geo) {
+  const p = geo.attributes.position, n = geo.attributes.normal, uv = geo.attributes.uv;
+  for (let i = 0; i < p.count; i++) {
+    const ax = Math.abs(n.getX(i)), ay = Math.abs(n.getY(i));
+    if (ax > 0.5) uv.setXY(i, p.getZ(i), p.getY(i));
+    else if (ay > 0.5) uv.setXY(i, p.getX(i), p.getZ(i));
+    else uv.setXY(i, p.getX(i), p.getY(i));
+  }
+  return geo;
 }
 
 // ———————————————————————————————— Room helpers ————————————————————————————————

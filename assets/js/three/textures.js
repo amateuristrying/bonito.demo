@@ -289,3 +289,90 @@ export function blobTex() {
     return t;
   });
 }
+
+// ——— Premium detail maps ———
+// Fine plaster for walls/ceilings (used as a bump map)
+export function plasterTex() {
+  return cached('plaster', () => {
+    const [c, g] = cvs(512);
+    g.fillStyle = '#808080'; g.fillRect(0, 0, 512, 512);
+    const r = rng(17);
+    // each layer is drawn sharp on its own canvas, then blurred ONCE when composited
+    for (const [n, size, a, blur] of [[700, 40, 0.06, 12], [4000, 6, 0.08, 2], [12000, 1.6, 0.1, 0]]) {
+      const [lc, lg] = cvs(512);
+      for (let i = 0; i < n; i++) {
+        lg.fillStyle = r() > 0.5 ? `rgba(255,255,255,${a})` : `rgba(0,0,0,${a})`;
+        lg.beginPath(); lg.arc(r() * 512, r() * 512, size * (0.5 + r()), 0, 7); lg.fill();
+      }
+      g.filter = blur ? `blur(${blur}px)` : 'none';
+      g.drawImage(lc, 0, 0);
+    }
+    g.filter = 'none';
+    return finish(c, { repeat: [2, 2], srgb: false });
+  });
+}
+
+// Bouclé / woven upholstery (bump + subtle colour variation)
+export function boucleTex() {
+  return cached('boucle', () => {
+    const [c, g] = cvs(512);
+    g.fillStyle = '#7a7a7a'; g.fillRect(0, 0, 512, 512);
+    const r = rng(23);
+    for (let i = 0; i < 9000; i++) {
+      const x = r() * 512, y = r() * 512, s = 1.5 + r() * 3.2;
+      g.strokeStyle = r() > 0.4 ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.3)';
+      g.lineWidth = 0.8 + r();
+      g.beginPath(); g.arc(x, y, s, r() * 6, r() * 6 + 4.5); g.stroke();
+    }
+    // weave rows
+    g.globalAlpha = 0.12;
+    for (let y = 0; y < 512; y += 4) { g.fillStyle = (y / 4) % 2 ? '#fff' : '#000'; g.fillRect(0, y, 512, 2); }
+    g.globalAlpha = 1;
+    return finish(c, { repeat: [3, 3], srgb: false });
+  });
+}
+
+// Continuous wood grain (veneer, no plank joints) for furniture
+export function grainTex(base, seed = 31) {
+  return cached('grain' + base + seed, () => {
+    const [c, g] = cvs(1024);
+    const r = rng(seed);
+    g.fillStyle = base; g.fillRect(0, 0, 1024, 1024);
+    for (let k = 0; k < 220; k++) {
+      const y0 = r() * 1024;
+      g.strokeStyle = r() > 0.55 ? tint(base, -0.12 - r() * 0.1) : tint(base, 0.06);
+      g.globalAlpha = 0.08 + r() * 0.22;
+      g.lineWidth = 0.6 + r() * 2.4;
+      g.beginPath(); g.moveTo(0, y0);
+      const f = 0.004 + r() * 0.01, a = 3 + r() * 14, ph = r() * 6;
+      for (let x = 0; x <= 1024; x += 16) g.lineTo(x, y0 + Math.sin(x * f + ph) * a + Math.sin(x * f * 3.1) * a * 0.25);
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+    return finish(c);
+  });
+}
+
+// What you see through the windows: soft sky, warm haze and a distant city line
+export function skyViewTex() {
+  return cached('skyview', () => {
+    const [c, g] = cvs(2048, 1024);
+    const grd = g.createLinearGradient(0, 0, 0, 1024);
+    grd.addColorStop(0, '#9DB7C8'); grd.addColorStop(0.38, '#CFDCE0'); grd.addColorStop(0.5, '#F1E7D6'); grd.addColorStop(0.53, '#D9CDBA'); grd.addColorStop(1, '#BFB3A0');
+    g.fillStyle = grd; g.fillRect(0, 0, 2048, 1024);
+    const r = rng(41);
+    const layer = (blur, draw) => { const [lc, lg] = cvs(2048, 1024); draw(lg); g.filter = `blur(${blur}px)`; g.drawImage(lc, 0, 0); g.filter = 'none'; };
+    // clouds
+    layer(18, (lg) => { for (let i = 0; i < 26; i++) { lg.fillStyle = `rgba(255,255,255,${0.25 + r() * 0.3})`; lg.beginPath(); lg.ellipse(r() * 2048, 120 + r() * 300, 80 + r() * 200, 18 + r() * 30, 0, 0, 7); lg.fill(); } });
+    // two skyline layers
+    for (const [col, hMax, blur] of [['rgba(150,160,170,0.55)', 120, 3], ['rgba(120,128,136,0.7)', 70, 1]]) {
+      layer(blur, (lg) => { lg.fillStyle = col; let x = 0; while (x < 2048) { const w = 8 + r() * 26, h = 4 + r() * hMax * 0.45; lg.fillRect(x, 512 - h, w, h + 3); x += w + r() * 6; } });
+    }
+    // tree line
+    layer(2, (lg) => { for (let i = 0; i < 700; i++) { lg.fillStyle = `rgba(${90 + r() * 30},${110 + r() * 30},${90 + r() * 20},0.75)`; lg.beginPath(); lg.arc(r() * 2048, 514 + r() * 8, 3 + r() * 6, 0, 7); lg.fill(); } });
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.wrapS = THREE.RepeatWrapping;
+    return t;
+  });
+}

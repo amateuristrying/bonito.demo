@@ -2,6 +2,11 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { skyViewTex } from './textures.js';
 
 const lerp = THREE.MathUtils.lerp;
 const EYE = 1.6;
@@ -19,6 +24,9 @@ export class Stage {
     r.shadowMap.enabled = shadows;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
     r.xr.enabled = true;
+    // if the GPU drops the context, fall back to the plain renderer instead of a blank canvas
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); this.composer = null; this.lost = true; }, false);
+    canvas.addEventListener('webglcontextrestored', () => { this.lost = false; }, false);
     const scene = (this.scene = new THREE.Scene());
     if (background) scene.background = new THREE.Color(background);
     const pmrem = new THREE.PMREMGenerator(r);
@@ -33,10 +41,31 @@ export class Stage {
     sun.position.set(7, 14, 9);
     sun.castShadow = shadows;
     sun.shadow.mapSize.set(mobile ? 1024 : 2048, mobile ? 1024 : 2048);
-    sun.shadow.bias = -0.0004;
-    sun.shadow.normalBias = 0.025;
-    sun.shadow.radius = 4;
+    sun.shadow.bias = -0.0003;
+    sun.shadow.normalBias = 0.02;
     scene.add(sun, sun.target);
+    // soft fill from the opposite side so shadowed faces never go flat-black
+    this.fill = new THREE.DirectionalLight('#e8eefa', 0.45);
+    this.fill.position.set(-9, 8, -6);
+    scene.add(this.fill);
+    // the view through the windows — only shown when the camera is inside the home
+    this.sky = new THREE.Mesh(new THREE.SphereGeometry(70, 48, 24), new THREE.MeshBasicMaterial({ map: skyViewTex(), side: THREE.BackSide, depthWrite: false, toneMapped: false }));
+    this.sky.material.map.repeat.x = 2;
+    this.sky.visible = false;
+    scene.add(this.sky);
+    // post-processing: ground-truth ambient occlusion gives contact shadows in corners and under furniture
+    this.quality = !mobile && !/Mobi|Android/i.test(navigator.userAgent);
+    if (this.quality) {
+      const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
+      this.composer = new EffectComposer(r, rt);
+      this.composer.addPass(new RenderPass(scene, this.camera));
+      this.gtao = new GTAOPass(scene, this.camera, 1, 1);
+      this.gtao.updateGtaoMaterial({ radius: 0.42, distanceExponent: 1.6, thickness: 1.2, scale: 1.25, samples: 16, distanceFallOff: 1, screenSpaceRadius: false });
+      this.gtao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 5, rings: 2, samples: 12 });
+      this.gtao.blendIntensity = 0.95;
+      this.composer.addPass(this.gtao);
+      this.composer.addPass(new OutputPass());
+    }
     this.timeOfDay = 0;
     this.mode = 'orbit';
     this.apartment = null;
@@ -68,6 +97,10 @@ export class Stage {
     const w = el.clientWidth || innerWidth, h = el.clientHeight || innerHeight;
     if (this.renderer.xr.isPresenting) return;
     this.renderer.setSize(w, h, false);
+    if (this.composer) {
+      this.composer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+      this.composer.setSize(w, h);
+    }
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
   }
@@ -82,6 +115,7 @@ export class Stage {
     c.left = -s; c.right = s; c.top = s; c.bottom = -s; c.near = 1; c.far = 60;
     c.updateProjectionMatrix();
     this.sun.target.position.set(0, 0, 0);
+    this.sky.position.set(0, 0.4, 0);
     this.floors = [];
     apt.group.traverse((o) => { if (o.name === 'floor') this.floors.push(o); });
     if (this.controls) {
@@ -108,6 +142,8 @@ export class Stage {
       this.sun.position.set(lerp(7, 12, v), lerp(14, 5, v), lerp(9, 4, v));
       this.hemi.intensity = lerp(0.75, 0.18, v);
       this.hemi.color.set('#fff6ea').lerp(new THREE.Color('#5b6b8c'), v);
+      this.fill.intensity = lerp(0.45, 0.06, v);
+      this.sky.material.color.set('#ffffff').lerp(new THREE.Color('#2b3350'), v * 0.92);
       this.scene.environmentIntensity = lerp(0.38, 0.1, v);
       this.renderer.toneMappingExposure = lerp(0.92, 1.1, v);
       if (this.scene.background?.isColor) this.scene.background.set(this.bgDay || '#EFE6D3').lerp(new THREE.Color('#1f1a22'), v * 0.9);
@@ -261,7 +297,16 @@ export class Stage {
       this.target.copy(this.controls.target);
     }
     for (const fn of this.ticks) fn(dt);
-    if (this.running || this.renderer.xr.isPresenting) this.renderer.render(this.scene, this.camera);
+    this.sky.visible = this.camera.position.y < 2.75 || this.renderer.xr.isPresenting;
+    if (this.renderer.xr.isPresenting) this.renderer.render(this.scene, this.camera);
+    else if (this.running && !this.lost) {
+      if (this.composer) {
+        // AO radius is in metres: soften it when the camera pulls far away (dollhouse view)
+        const far = this.camera.position.y > 3.2;
+        if (far !== this._far) { this._far = far; this.gtao.updateGtaoMaterial({ radius: far ? 0.6 : 0.42, scale: far ? 1.0 : 1.25 }); this.gtao.blendIntensity = far ? 0.8 : 0.95; }
+        this.composer.render(dt);
+      } else this.renderer.render(this.scene, this.camera);
+    }
   }
 
   async enterVR(startPos) {
