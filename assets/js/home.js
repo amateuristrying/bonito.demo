@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { init, isTouch, reduced, lenis } from './core.js';
+import { init, isTouch, reduced } from './core.js';
 import { Stage } from './three/stage.js';
 import { buildApartment, H } from './three/apartment.js';
 
@@ -136,70 +136,6 @@ function story() {
   cards.forEach((c) => { if (+c.dataset.ch !== 0) gsap.set(c, { autoAlpha: 0, y: 24 }); });
   gsap.set(cards.find((c) => c.dataset.ch === '0'), { autoAlpha: 0, y: 20 });
   shown.clear();
-
-  // ——— Chapter stepper: one gesture = one chapter, with a hold at every stop ———
-  // Each stop is the middle of a chapter's "hold" window, so the camera parks and the card reads.
-  const STOPS = [0, 0.112, 0.272, 0.395, 0.545, 0.685, 0.84, 0.985];
-  const trig = tl.scrollTrigger;
-  const yAt = (p) => trig.start + p * (trig.end - trig.start);
-  const curY = () => (lenis ? lenis.scroll : window.scrollY);
-  const inStory = () => { const y = curY(); return y >= trig.start - 2 && y <= trig.end + 2; };
-  const TRAVEL = 2.1; // seconds of camera travel between chapters
-  const DWELL = 650;  // ms the chapter must stay parked before the next step is accepted
-  let busy = false, lastInput = 0, arrivedAt = 0, settleTimer = 0;
-  const targetFor = (dir) => {
-    const y = curY();
-    if (dir > 0) { const s = STOPS.find((p) => yAt(p) > y + 4); return s === undefined ? null : s; }
-    const s = [...STOPS].reverse().find((p) => yAt(p) < y - 4); return s === undefined ? null : s;
-  };
-  const release = () => {
-    // input has gone quiet and the dwell is over → the next gesture may move again
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(() => {
-      if (performance.now() - lastInput < 260 || performance.now() - arrivedAt < DWELL) return release();
-      busy = false;
-    }, 120);
-  };
-  const go = (p) => {
-    busy = true;
-    const done = () => { arrivedAt = performance.now(); release(); };
-    if (lenis) lenis.scrollTo(yAt(p), { duration: TRAVEL, easing: (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2), lock: true, force: true, onComplete: done });
-    else { const o = { y: scrollY }; gsap.to(o, { y: yAt(p), duration: TRAVEL, ease: 'power3.inOut', onUpdate: () => scrollTo(0, o.y), onComplete: done }); }
-  };
-  // returns true when the story consumed the gesture
-  const step = (dir) => {
-    lastInput = performance.now();
-    if (!inStory()) return false;
-    if (busy) return true;
-    const p = targetFor(dir);
-    if (p === null) return false; // before the first / after the last chapter → normal page scroll
-    go(p);
-    return true;
-  };
-  if (!reduced) {
-    addEventListener('wheel', (e) => {
-      if (Math.abs(e.deltaY) < 2 || e.ctrlKey) return;
-      if (step(Math.sign(e.deltaY))) { e.preventDefault(); e.stopImmediatePropagation(); }
-    }, { capture: true, passive: false });
-    let ty = null, used = false;
-    addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; used = false; }, { capture: true, passive: true });
-    addEventListener('touchmove', (e) => {
-      if (ty === null) return;
-      const dy = ty - e.touches[0].clientY;
-      if (!inStory() || (!busy && Math.abs(dy) < 8)) return;
-      if (used || busy) { e.preventDefault(); return; }
-      if (Math.abs(dy) > 24 && step(Math.sign(dy))) { used = true; e.preventDefault(); }
-      else if (targetFor(Math.sign(dy)) !== null) e.preventDefault();
-    }, { capture: true, passive: false });
-    addEventListener('touchend', () => { ty = null; }, { capture: true });
-    addEventListener('keydown', (e) => {
-      if (e.target.closest?.('input,textarea,select,button,a')) return;
-      const dir = { ArrowDown: 1, PageDown: 1, ' ': e.shiftKey ? -1 : 1, ArrowUp: -1, PageUp: -1 }[e.key];
-      if (dir && step(dir)) e.preventDefault();
-    }, { capture: true });
-    // scrollbar drags / anchor jumps still settle on the nearest chapter
-    ScrollTrigger.create({ trigger: '.story', start: 'top top', end: 'bottom bottom', snap: { snapTo: [...STOPS, 1], duration: { min: 0.6, max: 1.6 }, delay: 0.25, ease: 'power2.inOut', inertia: false } });
-  }
 
   // pause rendering offscreen
   ScrollTrigger.create({ trigger: '.story', start: 'top bottom', end: 'bottom top', onToggle: (s) => (stage.running = s.isActive) });
