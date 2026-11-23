@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bonito Designs · Celebrity Designed Homes</title>
+  <meta name="description" content="Transform space with Bonito Designs! Explore celebrity designed homes for luxurious interiors that reflect your unique style and aspirations." />
+  <meta name="theme-color" content="#5F1B15" />
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,200..600,0..100;1,9..144,200..600,0..100&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/" } }</script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script type="module" src="/assets/js/home.js"></script>
+</head>
+<body>
+<main>
+  <!-- ═══ HERO + 3D LIFE DESIGN STORY ═══ -->
+  <section class="story" id="story" aria-label="Life Design story">
+    <div class="story__sticky">
+      <div class="story__frame"><canvas id="story-canvas" aria-label="Interactive 3D apartment designed by Bonito"></canvas><div class="story__shade"></div></div>
+
+      <div class="hero" id="hero">
+        <div class="wrap">
+          <h1><span class="line-mask"><span>Experience India’s</span></span><span class="line-mask"><span><span class="italic">Leading</span> Design Voice</span></span></h1>
+          <div class="hero__note"><svg viewBox="0 0 44 30" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M42 4C30 4 14 8 6 24"/><path d="M4 16l2 9 9-3"/></svg><span class="hand">celebrity-curated!</span></div>
+        </div>
+      </div>
+
+      <div class="chapter is-right" data-ch="0" style="bottom:clamp(24px,5vh,56px)">
+        <p style="font-size:15.5px">At Bonito Designs, design doesn’t start with layouts, it starts with you. Your life, your habits, your future, thoughtfully translated into a home shaped by <strong style="color:var(--maroon)">celebrity design sensibility</strong>, crafted to live beautifully every day.</p>
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;pointer-events:auto"><a class="btn sm" href="/design/">Discover Life Design <span class="arr">→</span></a><a class="btn sm ghost" href="#book" data-book>Book Consultation</a></div>
+      </div>
+
+      <div class="story__chapters">
+        <div class="chapter chapter--intro" data-ch="1">
+          <span class="hand">explore the difference</span>
+          <h2 class="h-m" style="margin:10px 0 14px">Our <span class="italic">LifeDesign</span> philosophy</h2>
+          <p>Our LifeDesign philosophy begins with how you live. Your routines, relationships, pauses, and patterns. We design homes that respond intuitively to everyday life, shaping spaces that feel natural, and live beautiful.</p>
+        </div>
+        <div class="chapter" data-ch="2"><div class="chapter__n"><b>1</b><span class="mono">Living room · 8:00 am</span></div><h3>Daily Rhythms</h3><p>Spaces designed to tune into your day, from morning light to evening calm.</p></div>
+        <div class="chapter is-right" data-ch="3"><div class="chapter__n"><b>2</b><span class="mono">Performance fabrics</span></div><h3>Pet-Friendly Living</h3><p>Scratch-resistant surfaces and durable fabrics designed to withstand everyday paws and play.</p></div>
+        <div class="chapter" data-ch="4"><div class="chapter__n"><b>3</b><span class="mono">Master bedroom</span></div><h3>Senior-Safe Comfort</h3><p>Clear layouts and safe surfaces designed for the ease, confidence, and comfort of seniors.</p></div>
+        <div class="chapter is-right" data-ch="5"><div class="chapter__n"><b>4</b><span class="mono">Plan view</span></div><h3>Built Around You</h3><p>Layouts designed around how your family gathers, moves, and spends time together.</p></div>
+        <div class="chapter" data-ch="6"><div class="chapter__n"><b>5</b><span class="mono">Dining · 8:30 pm</span></div><h3>Family-First Design</h3><p>Proportions and details that adapt to your comfort, habits, and routines.</p></div>
+        <div class="chapter chapter--intro" data-ch="7" style="pointer-events:auto">
+          <span class="hand">now, step inside</span>
+          <h2 class="h-m" style="margin:10px 0 14px">Every Bonito home, in <span class="italic">3D</span></h2>
+          <p>Orbit the full floor plan, walk room to room at eye level, and place our furniture in your own space with AR.</p>
+          <div style="margin-top:22px"><a href="/design/#projects" class="btn">Explore signature projects <span class="arr">→</span></a></div>
+        </div>
+      </div>
+      <div class="story__progress" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="story__clock" aria-hidden="true">Morning</div>
+      <div class="scroll-hint" aria-hidden="true"><span>Scroll to step inside</span><i></i></div>
+    </div>
+  </section>
+
+  <!-- ═══ GAURI KHAN ═══ -->
+  <section class="section" id="gauri">
+    <div class="wrap gauri">
+      <div class="gauri__media img-reveal"><img src="/assets/img/gaurik.webp" alt="Gauri Khan" data-speed="0.6" /><span class="gauri__badge">Global Design Advisor</span></div>
+      <div>
+        <span class="eyebrow" data-reveal>Experience India’s Leading Design Voice</span>
+        <h2 class="gauri__name display" style="margin-top:26px"><span class="line-mask"><span data-gk>GAURI</span></span><span class="line-mask"><span data-gk>KHAN</span></span></h2>
+        <p class="gauri__role" data-reveal>Global Design Advisor for Bonito Designs</p>
+        <p class="lead" data-split>Gauri Khan’s globally inspired design sensibility guides our creative direction, shaping thoughtful, refined homes for today. This vision comes alive through Atelier Series, a curated collection of world-inspired themes for modern Indian homes.</p>
+        <div style="margin-top:34px;display:flex;gap:10px;flex-wrap:wrap" data-reveal><a class="btn" href="#atelier">Explore Gauri Khan’s Atelier Series <span class="arr">→</span></a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHY ═══ -->
+  <section class="section" id="why" style="padding-top:0">
+    <div class="wrap">
+      <div class="why__head">
+        <div><span class="eyebrow" data-reveal>Born in Bengaluru. Trusted across India.</span><h2 class="h-l" style="margin-top:20px" data-split>Why Homeowners Choose Bonito</h2></div>
+        <p class="lead" data-reveal>India’s largest full-home-only interior design brand, creating branded homes shaped by celebrity-curated design thinking, deep expertise, and a thoughtful understanding of how people live.</p>
+      </div>
+      <div class="stats">
+        <div class="stat" data-reveal><div class="stat__v"><span data-count="15000">0</span><small>+</small></div><div class="stat__l">Homes</div><div class="stat__d">Designed for real life, curated with celebrity vision.</div></div>
+        <div class="stat" data-reveal data-delay="0.08"><div class="stat__v"><span data-count="10">0</span><small>Million+</small></div><div class="stat__l">Sq Ft</div><div class="stat__d">Thoughtfully designed spaces.</div></div>
+        <div class="stat" data-reveal data-delay="0.16"><div class="stat__v"><span data-count="15">0</span><small>+</small></div><div class="stat__l">Years</div><div class="stat__d">Of full-home design experience.</div></div>
+        <div class="stat" data-reveal><div class="stat__v"><span data-count="150">0</span><small>+</small></div><div class="stat__l">In-house team</div><div class="stat__d">An in-house team that understands how homes work.</div></div>
+        <div class="stat" data-reveal data-delay="0.08"><div class="stat__v"><span data-count="90">0</span><small>Day</small></div><div class="stat__l">Delivery</div><div class="stat__d">Streamlined execution. Clear timelines. No guesswork.</div></div>
+        <div class="stat" data-reveal data-delay="0.16"><div class="stat__v"><span data-count="10">0</span><small>+ Year</small></div><div class="stat__l">Warranty</div><div class="stat__d">Built to last, backed with long-term peace of mind.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ATELIER ═══ -->
+  <section class="section atelier" id="atelier">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Curated by our Global Design Advisor</span>
+      <h2 class="h-l" style="margin-top:20px;max-width:14ch" data-split>The Atelier Series by Gauri Khan</h2>
+      <p class="lead" style="margin-top:22px" data-reveal>Themes curated by our Global Design Advisor, Gauri Khan, translated into immersive design inspirations for modern Indian homes.</p>
+      <div class="themes" data-themes>
+        <a class="theme" href="https://bonito.in/design-atlas" target="_blank" rel="noopener" data-img="/assets/img/mz1e.webp"><span class="theme__n">01</span><span class="theme__t">Modern Zen</span><span class="theme__go">↗</span><img class="theme__img" src="/assets/img/mz1e.webp" alt="Modern Zen" loading="lazy" /></a>
+        <a class="theme" href="https://bonito.in/design-atlas" target="_blank" rel="noopener" data-img="/assets/img/al2a.webp"><span class="theme__n">02</span><span class="theme__t">Abstract Luxury</span><span class="theme__go">↗</span><img class="theme__img" src="/assets/img/al2a.webp" alt="Abstract Luxury" loading="lazy" /></a>
+        <a class="theme" href="https://bonito.in/design-atlas" target="_blank" rel="noopener" data-img="/assets/img/er1-1.webp"><span class="theme__n">03</span><span class="theme__t">European Reverie</span><span class="theme__go">↗</span><img class="theme__img" src="/assets/img/er1-1.webp" alt="European Reverie" loading="lazy" /></a>
+        <a class="theme" href="https://bonito.in/design-atlas" target="_blank" rel="noopener" data-img="/assets/img/ll1.webp"><span class="theme__n">04</span><span class="theme__t">Lyrical Luxury</span><span class="theme__go">↗</span><img class="theme__img" src="/assets/img/ll1.webp" alt="Lyrical Luxury" loading="lazy" /></a>
+        <a class="theme" href="https://bonito.in/design-atlas" target="_blank" rel="noopener" data-img="/assets/img/mp1.webp"><span class="theme__n">05</span><span class="theme__t">Modern Poise</span><span class="theme__go">↗</span><img class="theme__img" src="/assets/img/mp1.webp" alt="Modern Poise" loading="lazy" /></a>
+      </div>
+      <div style="margin-top:44px" data-reveal><a class="btn light" href="https://bonito.in/design-atlas" target="_blank" rel="noopener">Discover Atelier Series <span class="arr">→</span></a></div>
+    </div>
+  </section>
+  <div class="hover-img" aria-hidden="true"><img alt="" /></div>
+
+  <!-- ═══ PROCESS ═══ -->
+  <section class="section" id="process">
+    <div class="wrap process">
+      <div class="process__aside">
+        <span class="eyebrow" data-reveal>A guided design experience</span>
+        <h2 class="h-l" style="margin-top:20px" data-split>How Your Home Comes Together</h2>
+        <p class="lead" style="margin-top:22px" data-reveal>A guided design experience built on clarity, collaboration and ease - shaped by celebrity-curated design thinking and Bonito Designs’ full-home expertise.</p>
+        <div style="margin-top:32px" data-reveal><a class="btn" href="#book" data-book>Request a Call Back <span class="arr">→</span></a></div>
+      </div>
+      <div class="steps">
+        <div class="steps__line"><i></i></div>
+        <div class="step"><div class="step__dot">1</div><div><span class="step__tag">hello, you!</span><h3>Say Hello</h3><p>A quick consultation to understand you, your lifestyle, and your home.</p></div></div>
+        <div class="step"><div class="step__dot">2</div><div><span class="step__tag">ideas, shaped!</span><h3>Dream Together</h3><p>Meet your designer to shape the direction of your celebrity curated space.</p></div></div>
+        <div class="step"><div class="step__dot">3</div><div><span class="step__tag">now in 3D + AR!</span><h3>See It Come Alive</h3><p>Layouts, materials, and 3D designs bring your home into focus.</p><a class="link-u" href="/design/#projects">Try it on a signature home →</a></div></div>
+        <div class="step"><div class="step__dot">4</div><div><span class="step__tag">keys, handed!</span><h3>Move In With A Smile</h3><p>A smooth 90-day build turns the design into reality.</p></div></div>
+        <div class="step"><div class="step__dot">5</div><div><span class="step__tag">always with you</span><h3>Trust The Process</h3><p>Your dedicated project manager keeps everything simple and clear.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 3D TEASER ═══ -->
+  <section class="tease" id="in3d">
+    <div class="wrap tease__grid">
+      <div>
+        <span class="eyebrow" style="color:var(--coral-2)" data-reveal>New · Immersive design reviews</span>
+        <h2 class="h-l" style="margin-top:20px" data-split>Our signature projects, now in 3D &amp; AR</h2>
+        <p class="lead" style="margin-top:22px" data-reveal>Instead of flipping through photographs, step into each home. Orbit the dollhouse, walk through at eye level, tap any piece to learn its finish — then place it in your own room with augmented reality.</p>
+        <div class="tease__modes" data-reveal><span>Orbit</span><span>Walk-through</span><span>Plan</span><span>Day ↔ Evening</span><span>View in AR</span><span>VR ready</span></div>
+        <a class="btn light" href="/design/#projects" data-reveal>Enter a Bonito home <span class="arr">→</span></a>
+      </div>
+      <div class="tease__stack" data-reveal>
+        <figure data-speed="0.4"><img src="/assets/img/liv2-1.webp" alt="Runwal Bliss living room" loading="lazy" /></figure>
+        <figure data-speed="-0.4"><img src="/assets/img/mbr-1.webp" alt="Bedroom" loading="lazy" /></figure>
+        <figure data-speed="0.2"><img src="/assets/img/kitchen-3.webp" alt="Kitchen" loading="lazy" /></figure>
+        <span class="tease__chip" style="left:6%;top:4%">● Walk mode</span>
+        <span class="tease__chip" style="right:4%;bottom:12%">AR · True scale</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TRANSFORMATIONS ═══ -->
+  <section class="section" id="transformations">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Before &amp; after</span>
+      <h2 class="h-l" style="margin-top:20px;max-width:16ch" data-split>Transformations That Tell a Story</h2>
+      <p class="lead" style="margin-top:22px" data-reveal>Real homes, before and after, where thoughtful design meets celebrity-led curation to shape how spaces are truly lived in.</p>
+      <div class="tx">
+        <div class="tx__card" data-reveal data-cursor="Play" data-video="https://d3pc8mc492u0e.cloudfront.net/shaswat.mp4" data-poster="/assets/img/shaswat.webp"><img src="/assets/img/shaswat.webp" alt="Shaswat Koul home transformation" loading="lazy" />
+          <div class="tx__meta"><dl><dt>Client</dt><dd>Shaswat Koul</dd><dt>City</dt><dd>Bengaluru HSR</dd><dt>Home</dt><dd>3BHK (1550 sqft)</dd></dl><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span></div></div>
+        <div class="tx__card" data-reveal data-delay="0.1" data-cursor="Play" data-video="https://d3pc8mc492u0e.cloudfront.net/madumitakitchen.mp4" data-poster="/assets/img/madumitakitchen.webp"><img src="/assets/img/madumitakitchen.webp" alt="Madhumita Arora home transformation" loading="lazy" />
+          <div class="tx__meta"><dl><dt>Client</dt><dd>Madhumita Arora</dd><dt>City</dt><dd>Bengaluru HRBR</dd><dt>Home</dt><dd>4BHK (Villa) (3640 sqft)</dd></dl><span class="play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg></span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ STORIES ═══ -->
+  <section class="section" id="stories" style="padding-top:0">
+    <div class="wrap" style="display:flex;justify-content:space-between;align-items:end;gap:30px;flex-wrap:wrap">
+      <div><span class="eyebrow" data-reveal>Real homeowners. Real journeys.</span><h2 class="h-l" style="margin-top:20px;max-width:14ch" data-split>Stories from Inside Bonito Homes</h2>
+        <p class="lead" style="margin-top:22px" data-reveal>Real homeowners. Real journeys. And the little design decisions that changed everything.</p></div>
+      <div class="rail-nav" data-reveal><button data-rail="-1" aria-label="Previous">←</button><button data-rail="1" aria-label="Next">→</button></div>
+    </div>
+    <div class="stories" data-rail-track>
+      <figure class="story-card"><img src="/assets/img/mehreen.webp" alt="Mehreen Pirzada's home" loading="lazy" /><blockquote>“Bonito Designs created a home that truly feels like us, thoughtful, personal and beautifully detailed. From the kitchen to my mother’s room, every space reflects our story. Seamless process, loved every bit of it.”</blockquote><figcaption>Mehreen Pirzada <span>actor</span></figcaption></figure>
+      <figure class="story-card"><img src="/assets/img/shshwant.webp" alt="Shashwant Koul's home" loading="lazy" /><blockquote>“Bonito Designs understood our expectations, our requirements and brought our thoughts into reality!”</blockquote><figcaption>Shashwant Koul <span>3BHK</span></figcaption></figure>
+      <figure class="story-card"><img src="/assets/img/raghvan.webp" alt="Raghavan family home" loading="lazy" /><blockquote>“Bonito Designs transformed our home with thoughtful, personalised design and a smooth, collaborative process. The result reflects our style perfectly and we’d happily recommend them.”</blockquote><figcaption>Raghavan VS <span>4BHK</span></figcaption></figure>
+      <figure class="story-card"><img src="/assets/img/madhumita.webp" alt="Madhumita and Deeraj's home" loading="lazy" /><blockquote>“The process was really collaborative with out of the box thinking. I appreciate the work done in every corner of the house.”</blockquote><figcaption>Madhumita &amp; Deeraj <span>villa</span></figcaption></figure>
+      <figure class="story-card"><img src="/assets/img/chandrashekhar.webp" alt="Chandrashekhar Joshi's home" loading="lazy" /><blockquote>“Bonito Designs delivered a timeless, premium home with flawless detail and a smooth, on-time experience. It exceeded our expectations.”</blockquote><figcaption>Chandrashekhar Joshi <span>3BHK</span></figcaption></figure>
+      <figure class="story-card"><img src="/assets/img/varun.webp" alt="Varun Pandey's home" loading="lazy" /><blockquote>“Bonito Designs gave us a spacious, elegant home that feels truly ours. Thoughtful design, smooth execution, and constant support made the entire journey effortless. 10/10 experience.”</blockquote><figcaption>Varun Pandey <span>4BHK</span></figcaption></figure>
+    </div>
+    <div class="wrap" style="margin-top:30px"><a class="link-u" href="/design/#tours">Show Videos →</a></div>
+  </section>
+
+  <!-- ═══ PRESS + PARTNERS ═══ -->
+  <section class="section" id="press" style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>In the news</span>
+      <h2 class="h-l" style="margin-top:20px" data-split>Design That Gets Noticed</h2>
+      <p class="lead" style="margin-top:22px" data-reveal>Our work and vision covered by India’s leading media publications.</p>
+      <div class="press">
+        <a href="http://brandequity.economictimes.indiatimes.com/times-business-awards-2020/news/detail/23059" target="_blank" rel="nofollow noopener" data-reveal><img class="thumb" src="/assets/img/ba1.webp" alt="" loading="lazy" /><img class="logo" src="/assets/img/bal1.svg" alt="" loading="lazy" /><p>BONITO DESIGNS WINS THE ‘BEST INTERIOR DESIGN BRAND’ AWARD | Times Business Awards 2020</p></a>
+        <a href="https://in.fashionnetwork.com/news/Bonito-designs-opens-experience-centre-in-mumbai%2C1638695.html" target="_blank" rel="nofollow noopener" data-reveal data-delay="0.08"><img class="thumb" src="/assets/img/newsimg.webp" alt="" loading="lazy" /><img class="logo" src="/assets/img/bal11.svg" alt="" loading="lazy" /><p>Bonito Designs opens experience centre in Mumbai</p></a>
+        <a href="https://bonito.in/blog/" target="_blank" rel="nofollow noopener" data-reveal data-delay="0.16"><img class="thumb" src="/assets/img/ba12.webp" alt="" loading="lazy" /><img class="logo" src="/assets/img/bal12.svg" alt="" loading="lazy" /><p>Things to keep in mind when designing a room for your teenager</p></a>
+      </div>
+      <h3 class="h-s" style="margin-top:110px;text-align:center" data-split>Designing Branded Homes, Together</h3>
+      <p class="lead" style="margin:14px auto 0;text-align:center" data-reveal>Collaborations that enable seamless, well-integrated interior design delivery.</p>
+    </div>
+    <div class="marquee"><div class="marquee__track">
+      <img src="/assets/img/century.webp" alt="Century" /><img src="/assets/img/sd-corp.svg" alt="SD Corp" /><img src="/assets/img/runwal.svg" alt="Runwal" /><img src="/assets/img/pavani.svg" alt="Pavani" /><img src="/assets/img/dssgroup-logo.webp" alt="DSS Group" />
+      <img src="/assets/img/century.webp" alt="" /><img src="/assets/img/sd-corp.svg" alt="" /><img src="/assets/img/runwal.svg" alt="" /><img src="/assets/img/pavani.svg" alt="" /><img src="/assets/img/dssgroup-logo.webp" alt="" />
+    </div></div>
+  </section>
+
+  <!-- ═══ CITIES ═══ -->
+  <section class="section" id="cities" style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Events · Benefits · Experiences</span>
+      <h2 class="h-l" style="margin-top:20px" data-split>From Your City, For Your Home</h2>
+      <p class="lead" style="margin-top:22px" data-reveal>Discover exclusive events, curated benefits and design experiences unfolding in your city.</p>
+      <div class="cities">
+        <a class="city" href="https://bonito.in/interior-designers-in-mumbai/" target="_blank" rel="noopener" data-reveal data-cursor="Explore"><img src="/assets/img/mumbai-mob.webp" alt="Mumbai" loading="lazy" /><div class="city__t"><h3>Mumbai</h3><span class="btn sm light">Explore More <span class="arr">→</span></span></div></a>
+        <a class="city" href="https://bonito.in/interior-designers-in-bangalore/" target="_blank" rel="noopener" data-reveal data-delay="0.1" data-cursor="Explore"><img src="/assets/img/bengaluru-mob2.jpg" alt="Bengaluru" loading="lazy" /><div class="city__t"><h3>Bengaluru</h3><span class="btn sm light">Explore Now <span class="arr">→</span></span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ EXPERIENCE CENTRE ═══ -->
+  <section class="section" id="experience" style="padding-top:0">
+    <div class="wrap">
+      <span class="eyebrow" data-reveal>Experience centres</span>
+      <h2 class="h-l" style="margin-top:20px" data-split>Step Into The Bonito Experience</h2>
+      <p class="lead" style="margin-top:22px" data-reveal>Our experience centres aren’t showrooms — they’re living expressions of how we design. Walk through full-home setups, feel the materials, see the detailing up close, and understand how thoughtful design comes together before it ever reaches your home.</p>
+      <div class="exp">
+        <div class="exp__media img-reveal"><video src="https://d3pc8mc492u0e.cloudfront.net/andheri.mp4" poster="/assets/img/andheri-2.webp" muted loop playsinline preload="none" data-autoplay></video></div>
+        <form class="exp__form form" data-form style="grid-template-columns:1fr" data-reveal>
+          <span class="hand">plan my visit</span><h3>Visit an experience centre</h3>
+          <div class="field"><select required data-city><option value="" disabled selected></option><option value="mumbai">Mumbai</option><option value="bengaluru">Bengaluru</option><option value="hyderabad">Hyderabad</option></select><label>Choose City</label></div>
+          <div class="field"><select required data-center disabled><option value="" disabled selected></option></select><label>Choose Center</label></div>
+          <div class="field"><input type="datetime-local" required placeholder=" " /><label>Choose slot</label></div>
+          <button class="btn light" type="submit" style="justify-content:center">Plan My Visit <span class="arr">→</span></button>
+          <div class="form__done">Your visit request is noted. <em style="opacity:.6">(Demo form: nothing was sent.)</em></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section class="section" id="faq" style="padding-top:0">
+    <div class="wrap faq">
+      <div><span class="eyebrow" data-reveal>FAQs</span><h2 class="h-l" style="margin-top:20px" data-split>Your Home Design Questions, Answered</h2></div>
+      <div class="faq__list">
+        <div class="qa"><button>What does Bonito Designs include in its interior design services? <i class="qa__ico"></i></button><div class="qa__a"><p>Bonito offers end-to-end interior design, from space planning and design development to material selection, custom furniture, lighting guidance, décor, and complete on-site execution. Our teams manage every detail so your home comes together as one cohesive, thoughtfully finished space.</p></div></div>
+        <div class="qa"><button>Do you design full homes or individual rooms as well? <i class="qa__ico"></i></button><div class="qa__a"><p>Full-home interiors are our core focus. In select cases, we also take on key spaces where the scope allows. In every project, we ensure the design feels complete and well considered.</p></div></div>
+        <div class="qa"><button>How does the Bonito design journey work from start to finish? <i class="qa__ico"></i></button><div class="qa__a"><p>Your dedicated designer guides you through every stage. From understanding how you live, to shaping concepts, presenting layouts and 3D visuals, selecting materials, and overseeing execution. The process is structured, clear, and designed to feel easy and reassuring.</p></div></div>
+        <div class="qa"><button>What is the typical timeline for a full-home interior project? <i class="qa__ico"></i></button><div class="qa__a"><p>Once designs are approved, most full-home projects move into a 90-day execution phase. Timelines may vary based on design complexity, material choices, and site conditions.</p></div></div>
+        <div class="qa"><button>How much do home interiors usually cost with Bonito Designs? <i class="qa__ico"></i></button><div class="qa__a"><p>Costs depend on your home size, material preferences, and overall scope.</p></div></div>
+        <div class="qa"><button>Do you offer customised furniture and built-in storage? <i class="qa__ico"></i></button><div class="qa__a"><p>Yes. We design custom-built solutions such as kitchens, wardrobes, and storage systems, along with curated loose furniture that complements your home’s overall design language.</p></div></div>
+        <div class="qa"><button>Which cities does Bonito Designs currently operate in? <i class="qa__ico"></i></button><div class="qa__a"><p>We currently offer full-home interior design services in Bengaluru and Mumbai, supported by dedicated design studios and in-house execution teams.</p></div></div>
+        <div class="qa"><button>Are flexible payment or financing options available? <i class="qa__ico"></i></button><div class="qa__a"><p>Yes. Our payment structure is phased across the design and execution journey to keep it convenient. We also offer attractive financing options, including zero-cost EMI plans through leading banks. Your design consultant will help you choose what works best for your project.</p></div></div>
+        <div class="qa"><button>How do I get started with Bonito Designs? <i class="qa__ico"></i></button><div class="qa__a"><p>Simply book a consultation with our design experts. Share a few basic details about your home, and we will guide you through the next steps with clarity and confidence.</p></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
